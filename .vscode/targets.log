@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jun  9 04:07:06 2022
+# Make data base, printed on Thu Jun  9 07:55:21 2022
 
 # Variables
 
@@ -23,7 +23,7 @@ SNAP_INSTANCE_KEY =
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-607fbea8-f04c-4ddd-9512-01949b487248.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-1a9eae29-37bb-41f6-b169-43e1d10da356.sock
 # environment
 LC_NAME = ko_KR.UTF-8
 # environment
@@ -105,7 +105,7 @@ SNAP_REEXEC =
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 2432
+VSCODE_PID = 15326
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -219,7 +219,7 @@ MANAGERPID = 1043
 # environment
 LC_MEASUREMENT = ko_KR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2380
+GIO_LAUNCHED_DESKTOP_FILE_PID = 15280
 # environment
 _ = /snap/code/97/usr/share/code/code
 # environment
@@ -277,6 +277,9 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 # variable set hash-table stats:
 # Load=132/1024=13%, Rehash=0, Collisions=5/159=3%
 
+ 
+make: *** No rule to make target 'all'.  Stop.
+
 # Pattern-specific Variable Values
 
 # No pattern-specific variable values.
@@ -307,9 +310,6 @@ Makefile:
 #  File has not been updated.
 
 # Not a target:
- 
-make: *** No rule to make target 'all'.  Stop.
-
 all:
 #  Command line target.
 #  Implicit rule search has been done.
@@ -344,6 +344,6 @@ GNUmakefile:
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=0/21=0%
-# Finished Make data base on Thu Jun  9 04:07:06 2022
+# Finished Make data base on Thu Jun  9 07:55:21 2022
 
  

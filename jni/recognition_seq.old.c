@@ -25,7 +25,7 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 {
 	register unsigned int i, x, y, SX;
 	float *hidden_layers, **weights, **biases;
-	register float sum;
+	register float sum, sum1, sum2, sum3, s;
 
 	float32x4_t Avec, Bvec;
 	float32x4_t SSUM;
@@ -66,14 +66,23 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < fixed_size; x++)
 		{
 			sum = biases[0][x];
+			//	sum1 = 0; sum2 = 0; sum3 = 0; 
 			SSUM = vdupq_n_f32(0.0);
 			for(y = 0; y < IMG_SIZE; y+=4)
 			{
+				//	sum  += input[y]   * weights[0][SX + y];
+				/*
+				sum  += *(input + y)     * *(wghts0 + SX + y);
+				sum1 += *(input + y + 1) * *(wghts0 + SX + y + 1);
+				sum2 += *(input + y + 2) * *(wghts0 + SX + y + 2);
+				sum3 += *(input + y + 3) * *(wghts0 + SX + y + 3);
+				*/
 				Avec = vld1q_f32(input + y);
 				Bvec = vld1q_f32(wghts0 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
 
 			}
+			//	sum += sum1 + sum2 + sum3;
 			sum += vgetq_lane_f32(SSUM, 0) + vgetq_lane_f32(SSUM, 1) + vgetq_lane_f32(SSUM, 2) + vgetq_lane_f32(SSUM, 3);
 			hidden_layers[x] = sigmoid(sum);
 			SX += IMG_SIZE;
@@ -84,13 +93,21 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < fixed_size; x++)
 		{
 			sum = biases[1][x];
+			//	sum1 = 0; sum2 = 0; sum3 = 0; 
 			SSUM = vdupq_n_f32(0.0);
 			for(y = 0; y < fixed_size; y+=4)
 			{	
+				/*
+				sum  += *(hidden_layers + y)     * *(wghts1 + SX + y);
+				sum1 += *(hidden_layers + y + 1) * *(wghts1 + SX + y + 1);
+				sum2 += *(hidden_layers + y + 2) * *(wghts1 + SX + y + 2);
+				sum3 += *(hidden_layers + y + 3) * *(wghts1 + SX + y + 3);
+				*/
 				Avec = vld1q_f32(hidden_layers + y);
 				Bvec = vld1q_f32(wghts1 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
 			}
+			//	sum += sum1 + sum2 + sum3;
 			sum += vgetq_lane_f32(SSUM, 0) + vgetq_lane_f32(SSUM, 1) + vgetq_lane_f32(SSUM, 2) + vgetq_lane_f32(SSUM, 3);
 			hidden_layers[fixed_size + x] = sigmoid(sum);
 			SX += fixed_size;
@@ -100,13 +117,21 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < fixed_size; x++)
 		{
 			sum = biases[2][x];
+			//	sum1 = 0; sum2 = 0; sum3 = 0; 
 			SSUM = vdupq_n_f32(0.0);
 			for(y = 0; y < fixed_size; y+=4)
 			{	
+				/*
+				sum  += *(hidden_layers + fixed_size + y)     * *(wghts2 + SX + y);
+				sum1 += *(hidden_layers + fixed_size + y + 1) * *(wghts2 + SX + y + 1);
+				sum2 += *(hidden_layers + fixed_size + y + 2) * *(wghts2 + SX + y + 2);
+				sum3 += *(hidden_layers + fixed_size + y + 3) * *(wghts2 + SX + y + 3);
+				*/
 				Avec = vld1q_f32(hidden_layers + fixed_size + y);
 				Bvec = vld1q_f32(wghts2 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
 			}
+			//	sum += sum1 + sum2 + sum3;
 			sum += vgetq_lane_f32(SSUM, 0) + vgetq_lane_f32(SSUM, 1) + vgetq_lane_f32(SSUM, 2) + vgetq_lane_f32(SSUM, 3);
 			hidden_layers[SD + x] = sigmoid(sum);
 			SX += fixed_size;
