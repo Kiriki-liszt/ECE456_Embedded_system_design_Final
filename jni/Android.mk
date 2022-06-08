@@ -7,7 +7,7 @@ LOCAL_LDFLAGS += -fPIE # -pie
 
 LOCAL_MODULE:=recognition_seq
 
-LOCAL_SRC_FILES:=srecognition_seq.c main.c
+LOCAL_SRC_FILES:=recognition_seq.c main.c
 
 LOCAL_LDLIBS := 
 
