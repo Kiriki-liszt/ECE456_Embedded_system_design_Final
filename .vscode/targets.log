@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun  8 14:26:12 2022
+# Make data base, printed on Thu Jun  9 01:43:30 2022
 
 # Variables
 
@@ -23,15 +23,15 @@ SNAP_INSTANCE_KEY =
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7376d9d2-70ea-4d31-9e4a-68ef9d157c78.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-704fc5dd-4c16-4fc1-8a89-de7b720657f1.sock
 # environment
 LC_NAME = ko_KR.UTF-8
 # environment
 LC_NUMERIC = ko_KR.UTF-8
 # environment
 VSCODE_CWD = /home/yoon
-# makefile (from 'Makefile', line 5)
-LIBS = -lm -lrt
+# environment
+NDK_ROOT = /home/yoon/android-ndk-r23
 # environment
 LC_ADDRESS = ko_KR.UTF-8
 # default
@@ -65,7 +65,7 @@ VSCODE_CODE_CACHE_PATH = /home/yoon/.config/Code/CachedData/c3511e6c69bb39013c4a
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.3BFTN1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.0ILMN1
 # default
 .LOADED := 
 # default
@@ -96,8 +96,8 @@ XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 +D = $(patsubst %/,%,$(dir $+))
 # environment
 XDG_SESSION_DESKTOP = ubuntu
-# makefile (from 'Makefile', line 1)
-MAKEFILE_LIST := Makefile
+# makefile
+MAKEFILE_LIST := 
 # environment
 SNAP_REEXEC = 
 # automatic
@@ -105,7 +105,7 @@ SNAP_REEXEC =
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 7564
+VSCODE_PID = 13911
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -113,7 +113,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1430,unix/yoon:/tmp/.ICE-unix/1430
+SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1376,unix/yoon:/tmp/.ICE-unix/1376
 # automatic
 *F = $(notdir $*)
 # environment
@@ -147,7 +147,7 @@ MAKE = $(MAKE_COMMAND)
 # environment
 SNAP_COOKIE = VwfIdrDTNjEjj7NVvUcKiOgIOUC7Xn4uDw0AGA8sxTArc5OdPokD
 # environment
-PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/yoon/platform-tools:/home/yoon/android-ndk-r23:/home/yoon/platform-tools
 # default
 MAKEFILES := 
 # environment
@@ -161,7 +161,7 @@ LC_TIME = ko_KR.UTF-8
 # environment
 SNAP = /snap/code/97
 # environment
-INVOCATION_ID = c3b403c4f2a341f6bd17583310d1bba0
+INVOCATION_ID = 4a3b994afc534b49a08c1a774d462a81
 # environment
 SNAP_REVISION = 97
 # environment
@@ -197,9 +197,9 @@ GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.deskto
 # environment
 SNAP_ARCH = amd64
 # makefile
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 1458
+SYSTEMD_EXEC_PID = 1400
 # environment
 DISPLAY = :0
 # environment
@@ -214,26 +214,22 @@ DISABLE_WAYLAND = 1
 SNAP_DATA = /var/snap/code/97
 # environment
 SNAP_CONTEXT = VwfIdrDTNjEjj7NVvUcKiOgIOUC7Xn4uDw0AGA8sxTArc5OdPokD
-# makefile (from 'Makefile', line 6)
-LDFLAGS = ${LIBS}
 # environment
-MANAGERPID = 1295
+MANAGERPID = 1240
 # environment
 LC_MEASUREMENT = ko_KR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 7515
+GIO_LAUNCHED_DESKTOP_FILE_PID = 13862
 # environment
 _ = /snap/code/97/usr/share/code/code
 # environment
 LC_PAPER = ko_KR.UTF-8
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
-# makefile (from 'Makefile', line 3)
-CFLAGS = -Wall -g -pg -O0
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/yoon/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:30056
+JOURNAL_STREAM = 8:31417
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -268,8 +264,6 @@ ELECTRON_NO_ATTACH_CONSOLE = 1
 SNAP_COMMON = /var/snap/code/common
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
-# makefile (from 'Makefile', line 1)
-CC = gcc
 # environment
 SNAP_USER_DATA = /home/yoon/snap/code/97
 # environment
@@ -281,8 +275,10 @@ LC_IDENTIFICATION = ko_KR.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # variable set hash-table stats:
+# Load=132/1024=13%, Rehash=0, Collisions=5/159=3%
+
  
-# Load=135/1024=13%, Rehash=0, Collisions=5/165=3%
+make: *** No rule to make target 'all'.  Stop.
 
 # Pattern-specific Variable Values
 
@@ -290,9 +286,9 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 
 # Directories
 
-# . (device 66314, inode 1576113): 18 files, no impossibilities.
+# . (device 66314, inode 1576113): 6 files, no impossibilities.
 
-# 18 files, no impossibilities in 1 directories.
+# 6 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -303,32 +299,9 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-08 14:00:14.265988227
-#  File has been updated.
-#  Successfully updated.
-
-recognition_seq: recognition_seq.o main.o
-#  Implicit rule search has not been done.
-#  Last modified 2022-06-03 11:06:35.320806
-#  File has been updated.
-#  Successfully updated.
-#  recipe to execute (from 'Makefile', line 17):
-	${CC} -pg $^ -o $@ ${LDFLAGS}
-
-# Not a target:
-recognition_seq.o:
-#  Implicit rule search has been done.
-#  Last modified 2022-06-03 11:06:35.272805
-#  File has been updated.
-#  Successfully updated.
-
-clean:
-#  Phony target (prerequisite of .PHONY).
-#  Implicit rule search has not been done.
 #  File does not exist.
-#  File has not been updated.
-#  recipe to execute (from 'Makefile', line 21):
-	rm -f recognition_seq.o main.o recognition_seq gmon.out
+#  File has been updated.
+#  Failed to be updated.
 
 # Not a target:
 .DEFAULT:
@@ -336,47 +309,41 @@ clean:
 #  Modification time never checked.
 #  File has not been updated.
 
-all: seq
-#  Phony target (prerequisite of .PHONY).
-#  Command line target.
-#  Implicit rule search has not been done.
-#  File does not exist.
-#  File has been updated.
-#  Successfully updated.
-
-seq: recognition_seq
-#  Phony target (prerequisite of .PHONY).
-#  Implicit rule search has not been done.
-#  File does not exist.
-#  File has been updated.
-#  Successfully updated.
-
 # Not a target:
-main.o:
+all:
+#  Command line target.
 #  Implicit rule search has been done.
-#  Last modified 2022-06-03 11:06:35.304806
-#  File has been updated.
-#  Successfully updated.
-
-.PHONY: all seq clean
-#  Implicit rule search has not been done.
-#  Modification time never checked.
+#  File does not exist.
 #  File has not been updated.
 
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+GNUmakefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
 # files hash-table stats:
-# Load=10/1024=1%, Rehash=0, Collisions=0/31=0%
+# Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 285 B / avg = 10 B
-# current buf: size = 8162 B / used = 285 B / count = 26 / avg = 10 B
+# strcache buffers: 1 (0) / strings = 14 / storage = 111 B / avg = 7 B
+# current buf: size = 8162 B / used = 111 B / count = 14 / avg = 7 B
 
-# strcache performance: lookups = 44 / hit rate = 40%
+# strcache performance: lookups = 17 / hit rate = 17%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=0/44=0%
-# Finished Make data base on Wed Jun  8 14:26:12 2022
+# Load=14/8192=0%, Rehash=0, Collisions=0/17=0%
+# Finished Make data base on Thu Jun  9 01:43:30 2022
 
  
