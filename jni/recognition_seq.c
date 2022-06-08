@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "recognition.h"
 #include <math.h>
+//#include <arm_neon.h>
 
 #define sigmoid(x) (1 / (1 + exp(-x)))
 #define half_img 392
