@@ -1,0 +1,15 @@
+digraph {
+	graph [fontname=Arial, nodesep=0.125, ranksep=0.25];
+	node [fontcolor=white, fontname=Arial, height=0, shape=box, style=filled, width=0];
+	edge [fontname=Arial];
+	1 [color="#ff0000", fontcolor="#ffffff", fontsize="10.00", label="recognition\n100.00%\n(0.00%)\n1×"];
+	1 -> 3 [arrowsize="0.76", color="#44c108", fontcolor="#44c108", fontsize="10.00", label="58.04%\n50000×", labeldistance="2.32", penwidth="2.32"];
+	1 -> 4 [arrowsize="0.64", color="#0baa41", fontcolor="#0baa41", fontsize="10.00", label="41.47%\n50000×", labeldistance="1.66", penwidth="1.66"];
+	2 [color="#ff0000", fontcolor="#ffffff", fontsize="10.00", label="main\n100.00%\n(0.00%)"];
+	2 -> 1 [arrowsize="1.00", color="#ff0000", fontcolor="#ff0000", fontsize="10.00", label="100.00%\n1×", labeldistance="4.00", penwidth="4.00"];
+	3 [color="#44c108", fontcolor="#ffffff", fontsize="10.00", label="between\n58.04%\n(57.70%)\n50000×"];
+	3 -> 5 [arrowsize="0.35", color="#0d0e73", fontcolor="#0d0e73", fontsize="10.00", label="0.34%\n51200000×", labeldistance="0.50", penwidth="0.50"];
+	4 [color="#0baa41", fontcolor="#ffffff", fontsize="10.00", label="in_2_first\n41.47%\n(41.30%)\n50000×"];
+	4 -> 5 [arrowsize="0.35", color="#0d0d73", fontcolor="#0d0d73", fontsize="10.00", label="0.17%\n25600000×", labeldistance="0.50", penwidth="0.50"];
+	5 [color="#0d0f73", fontcolor="#ffffff", fontsize="10.00", label="sgsg\n0.51%\n(0.51%)\n77300000×"];
+}

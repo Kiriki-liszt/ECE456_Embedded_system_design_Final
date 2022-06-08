@@ -1,0 +1,2 @@
+MNIST_image.bin filter=lfs diff=lfs merge=lfs -text
+MNIST_label.bin filter=lfs diff=lfs merge=lfs -text
