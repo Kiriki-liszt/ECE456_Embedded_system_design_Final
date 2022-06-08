@@ -17,69 +17,6 @@
 #define sd 1536			// size * depth
 #define SD 1024 		// size * (depth-1)
 
-/*
-void in_2_first(float * input, float ** weights, float * hidden_layers, float ** biases) {
-	// From the input layer to the first hidden layer
-	float sum;
-	int IX = 0;
-	for(int x = 0; x < fixed_size; x++)
-	{
-		sum = 0;
-		IX = IMG_SIZE * x;
-		for(int y = 0; y < IMG_SIZE; y++)
-		{
-			sum += input[y] * weights[0][IX + y];
-		}
-		sum += biases[0][x];
-		hidden_layers[x] = sigmoid(sum);
-		//IX += IMG_SIZE;
-	}
-}
-
-void between(float ** weights, float * hidden_layers, float ** biases) {
-	float sum;
-	int SJ = 0, SX = 0, SJJ = fixed_size;
-	for(int j = 1; j < fixed_depth; j++)
-	{
-		//SX = 0;
-		SJ = fixed_size * (j-1);
-		SJJ = fixed_size * j;
-		for(int x = 0; x < fixed_size; x++)
-		{
-			sum = 0;
-			SX = fixed_size * x;
-			for(int y = 0; y < fixed_size; y++)
-			{	// 이전 레이어는 계속 반복 : x가 없음 // 근데 weights는 새로운 세트로 바뀜 
-				sum += hidden_layers[SJ + y] * weights[j][SX + y];
-			}
-			sum += biases[j][x];
-			hidden_layers[SJJ + x] = sigmoid(sum);
-			//SX += fixed_size;
-		}
-		//SJ += fixed_size;
-		//SJJ += fixed_size;
-	}
-}
-
-void last_2_out(float * output, float ** weights, float * hidden_layers, float ** biases) {
-	float sum;
-	int SX = 0;
-	
-	for(int x = 0; x < DIGIT_COUNT; x++)
-	{
-		sum = 0;
-		SX = fixed_size * x;
-		for(int y = 0; y < fixed_size; y++)
-		{
-			sum += hidden_layers[SD + y] * weights[fixed_depth][SX + y];
-		}
-		sum += biases[fixed_depth][x];
-		output[x] = sigmoid(sum);
-		//SX += fixed_size;
-	}
-}
-*/
-
 void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
 {
 	register unsigned int i, x, y, SX;
@@ -118,8 +55,6 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 
 
 		// From the input layer to the first hidden layer
-		// in_2_first(input, weights, hidden_layers, biases);
-
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
@@ -138,8 +73,6 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		}
 
 		// Between hidden layers
-		// between(weights, hidden_layers, biases);
-
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
@@ -175,8 +108,6 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		}
 
 		// From the last hidden layer to the output layer
-		// last_2_out(output, weights, hidden_layers, biases);
-
 		SX = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
