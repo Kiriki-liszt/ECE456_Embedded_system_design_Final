@@ -18,7 +18,7 @@ recognition_seq: recognition_seq.o main.o
 
 
 clean:
-	rm -f recognition_seq.o main.o recognition_seq gmon.out
+	rm -f recognition_seq.o main.o recognition_seq 
 
 
 # build commands
