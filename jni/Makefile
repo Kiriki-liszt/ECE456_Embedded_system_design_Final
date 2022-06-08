@@ -14,7 +14,7 @@ all: seq
 seq: recognition_seq
 
 recognition_seq: recognition_seq.o main.o
-	${CC} -pg $^ -o $@ ${LDFLAGS}
+	${CC} $^ -o $@ ${LDFLAGS}
 
 
 clean:

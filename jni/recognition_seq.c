@@ -20,7 +20,7 @@
 void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
 {
 	register unsigned int i, x, y, SX;
-	float *hidden_layers, *temp, **weights, **biases;
+	float *hidden_layers, **weights, **biases;
 	register float sum, sum1, sum2, sum3;
 
 	hidden_layers	= (float *) malloc(sizeof(float) * sd);
@@ -46,13 +46,13 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 
 
 	float * input = images;
+	float * wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[3];
 
 	// Recognize numbers
 	for(i = 0; i < IMG_COUNT; i++)
 	{
 		//float * input = images + IMG_SIZE * i;
 		float output[DIGIT_COUNT];
-
 
 		// From the input layer to the first hidden layer
 		SX = 0;
@@ -62,10 +62,11 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			sum1 = 0; sum2 = 0; sum3 = 0; 
 			for(y = 0; y < IMG_SIZE; y+=4)
 			{
-				sum  += input[y]   * weights[0][SX + y];
-				sum1 += input[y+1] * weights[0][SX + y+1];
-				sum2 += input[y+2] * weights[0][SX + y+2];
-				sum3 += input[y+3] * weights[0][SX + y+3];
+				//	sum  += input[y]   * weights[0][SX + y];
+				sum  += *(input + y)     * *(wghts0 + SX + y);
+				sum1 += *(input + y + 1) * *(wghts0 + SX + y + 1);
+				sum2 += *(input + y + 2) * *(wghts0 + SX + y + 2);
+				sum3 += *(input + y + 3) * *(wghts0 + SX + y + 3);
 			}
 			sum += sum1 + sum2 + sum3;
 			hidden_layers[x] = sigmoid(sum);
@@ -80,10 +81,10 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			sum1 = 0; sum2 = 0; sum3 = 0; 
 			for(y = 0; y < fixed_size; y+=4)
 			{	
-				sum  += hidden_layers[y]   * weights[1][SX + y];
-				sum1 += hidden_layers[y+1] * weights[1][SX + y+1];
-				sum2 += hidden_layers[y+2] * weights[1][SX + y+2];
-				sum3 += hidden_layers[y+3] * weights[1][SX + y+3];
+				sum  += *(hidden_layers + y)     * *(wghts1 + SX + y);
+				sum1 += *(hidden_layers + y + 1) * *(wghts1 + SX + y + 1);
+				sum2 += *(hidden_layers + y + 2) * *(wghts1 + SX + y + 2);
+				sum3 += *(hidden_layers + y + 3) * *(wghts1 + SX + y + 3);
 			}
 			sum += sum1 + sum2 + sum3;
 			hidden_layers[fixed_size + x] = sigmoid(sum);
@@ -97,10 +98,10 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			sum1 = 0; sum2 = 0; sum3 = 0; 
 			for(y = 0; y < fixed_size; y+=4)
 			{	
-				sum  += hidden_layers[fixed_size + y] * weights[2][SX + y];
-				sum1 += hidden_layers[fixed_size + y+1] * weights[2][SX + y+1];
-				sum2 += hidden_layers[fixed_size + y+2] * weights[2][SX + y+2];
-				sum3 += hidden_layers[fixed_size + y+3] * weights[2][SX + y+3];
+				sum  += *(hidden_layers + fixed_size + y)     * *(wghts2 + SX + y);
+				sum1 += *(hidden_layers + fixed_size + y + 1) * *(wghts2 + SX + y + 1);
+				sum2 += *(hidden_layers + fixed_size + y + 2) * *(wghts2 + SX + y + 2);
+				sum3 += *(hidden_layers + fixed_size + y + 3) * *(wghts2 + SX + y + 3);
 			}
 			sum += sum1 + sum2 + sum3;
 			hidden_layers[SD + x] = sigmoid(sum);
@@ -115,8 +116,8 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			sum2 = 0;
 			for(y = 0; y < fixed_size; y+=2)
 			{
-				sum  += hidden_layers[SD + y] * weights[fixed_depth][SX + y];
-				sum2 += hidden_layers[SD + y+1] * weights[fixed_depth][SX + y+1];
+				sum  += *(hidden_layers + SD + y)     * *(wghts3 + SX + y);
+				sum2 += *(hidden_layers + SD + y + 1) * *(wghts3 + SX + y + 1);
 			}
 			sum += sum2;
 			output[x] = sigmoid(sum);
