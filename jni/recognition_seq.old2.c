@@ -25,10 +25,12 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 {
 	register unsigned int i, x, y, SX;
 	float *hidden_layers, **weights, **biases;
-	register float sum;
+	register float sum, sum2;
 
 	float32x4_t Avec, Bvec;
 	float32x4_t SSUM;
+	float32x4_t Avec2, Bvec2;
+	float32x4_t SSUM2;
 
 	hidden_layers	= (float *) malloc(sizeof(float) * sd);
 	weights			= (float **)malloc(sizeof(float *) * (fixed_depth + 1));
@@ -63,66 +65,92 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 
 		// From the input layer to the first hidden layer
 		SX = 0;
-		for(x = 0; x < fixed_size; x++)
+		for(x = 0; x < fixed_size; x+=2)
 		{
 			SSUM = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
 			for(y = 0; y < IMG_SIZE; y+=4)
 			{
 				Avec = vld1q_f32(input + y);
 				Bvec = vld1q_f32(wghts0 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
-
+				Avec2 = vld1q_f32(input + y);
+				Bvec2 = vld1q_f32(wghts0 + SX + IMG_SIZE + y);
+				SSUM2 = vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			sum = biases[0][x] + vaddvq_f32(SSUM);
 			hidden_layers[x] = sigmoid(sum);
-			SX += IMG_SIZE;
+			sum2 = biases[0][x+1] + vaddvq_f32(SSUM2);
+			hidden_layers[x+1] = sigmoid(sum2);
+
+			SX += IMG_SIZE + IMG_SIZE;
 		}
 
 		// Between hidden layers
 		SX = 0;
-		for(x = 0; x < fixed_size; x++)
+		for(x = 0; x < fixed_size; x+=2)
 		{
 			SSUM = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
 			for(y = 0; y < fixed_size; y+=4)
 			{	
 				Avec = vld1q_f32(hidden_layers + y);
 				Bvec = vld1q_f32(wghts1 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2 = vld1q_f32(hidden_layers + y);
+				Bvec2 = vld1q_f32(wghts1 + SX + fixed_size + y);
+				SSUM2 = vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			sum = biases[1][x] + vaddvq_f32(SSUM);
 			hidden_layers[fixed_size + x] = sigmoid(sum);
-			SX += fixed_size;
+			sum2 = biases[1][x+1] + vaddvq_f32(SSUM2);
+			hidden_layers[fixed_size + x+1] = sigmoid(sum2);
+
+			SX += fixed_size + fixed_size;
 		}
 
 		SX = 0;
-		for(x = 0; x < fixed_size; x++)
+		for(x = 0; x < fixed_size; x+=2)
 		{
 			SSUM = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
 			for(y = 0; y < fixed_size; y+=4)
 			{	
 				Avec = vld1q_f32(hidden_layers + fixed_size + y);
 				Bvec = vld1q_f32(wghts2 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2 = vld1q_f32(hidden_layers + fixed_size + y);
+				Bvec2 = vld1q_f32(wghts2 + SX + fixed_size + y);
+				SSUM2 = vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			sum = biases[2][x] + vaddvq_f32(SSUM);
 			hidden_layers[SD + x] = sigmoid(sum);
-			SX += fixed_size;
+			sum2 = biases[2][x+1] + vaddvq_f32(SSUM2);
+			hidden_layers[SD + x+1] = sigmoid(sum2);
+
+			SX += fixed_size + fixed_size;
 		}
 
 		// From the last hidden layer to the output layer
 		SX = 0;
-		for(x = 0; x < DIGIT_COUNT; x++)
+		for(x = 0; x < DIGIT_COUNT; x+=2)
 		{
 			SSUM = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
 			for(y = 0; y < fixed_size; y+=4)
 			{
 				Avec = vld1q_f32(hidden_layers + SD + y);
 				Bvec = vld1q_f32(wghts3 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2 = vld1q_f32(hidden_layers + SD + y);
+				Bvec2 = vld1q_f32(wghts3 + SX + fixed_size + y);
+				SSUM2 = vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			sum = biases[fixed_depth][x] + vaddvq_f32(SSUM);
 			output[x] = sigmoid(sum);
-			SX += fixed_size;
+			sum2 = biases[fixed_depth][x+1] + vaddvq_f32(SSUM2);
+			output[x+1] = sigmoid(sum2);
+			SX += fixed_size + fixed_size;
 		}
 
 
