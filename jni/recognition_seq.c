@@ -34,6 +34,7 @@ typedef struct{
 void * func(void* arguments) {				//optimized dnn
 
 	args* data = (args*) arguments;
+
 	int 	img_start 		= (data->img_start) * IMG_COUNT_pthread;
 	float 	* images 		= data->images;
 	float 	* network 		= data->network;
@@ -168,13 +169,8 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	pthread_t pid[4];	//pid
 	args arguments[4];
 
-	arguments[0].img_start = 0;
-	arguments[1].img_start = 1;
-	arguments[2].img_start = 2;
-	arguments[3].img_start = 3;
-
-
 	for(int img_divide = 0 ; img_divide < 4; img_divide++) {
+		arguments[img_divide].img_start = img_divide;
 		arguments[img_divide].images = images;
 		arguments[img_divide].network = network;
 		arguments[img_divide].labels = labels;
