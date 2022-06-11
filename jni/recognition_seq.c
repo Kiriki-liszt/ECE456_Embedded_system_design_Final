@@ -68,11 +68,11 @@ void * func(void* arguments) {				//optimized dnn
 	weights[fixed_depth] = network + sis + sss2;
 	biases[fixed_depth]  = weights[fixed_depth] + ds;
 
-	float * input  = images + img_start;
+	float * input  = images;
+	input += img_start * IMG_SIZE;
 	float * wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[3];
 	
 	// Recognize numbers
-
 	for(int j = 0; j < IMG_COUNT_pthread; j++)
 	{
 		int i = j + img_start;
@@ -153,9 +153,11 @@ void * func(void* arguments) {				//optimized dnn
 				max = output[x];
 			}
 		}
+		
 		// Store the result
 		confidences[i] = max;
 		labels[i] = label;
+
 		input += IMG_SIZE;
 	}
 }
@@ -166,10 +168,10 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	pthread_t pid[4];	//pid
 	args arguments[4];
 
-			arguments[0].img_start = 0;
-			arguments[1].img_start = 1;
-			arguments[2].img_start = 2;
-			arguments[3].img_start = 3;
+	arguments[0].img_start = 0;
+	arguments[1].img_start = 1;
+	arguments[2].img_start = 2;
+	arguments[3].img_start = 3;
 
 
 	for(int img_divide = 0 ; img_divide < 4; img_divide++) {
