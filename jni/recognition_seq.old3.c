@@ -4,11 +4,9 @@
 #include <math.h>
 #include <arm_neon.h>
 #include <pthread.h>
-#include <omp.h>
 
 #define sigmoid(x) (1 / (1 + exp(-x)))
-
-#define IMG_COUNT_pthread 12500	// 1/4 of IMG_COUNT
+#define IMG_COUNT_pthread 12500
 #define half_img 392
 #define half_size 256
 #define fixed_depth 3
@@ -23,6 +21,7 @@
 #define SD 1024 			// size * (depth-1)
 
 //	ndk-build clean && ndk-build && adb push libs/arm64-v8a/recognition_seq /data/local && adb shell chmod +x /data/local/recognition_seq
+
 
 typedef struct{
 	float 	* images;
@@ -73,9 +72,6 @@ void * func(void* arguments) {				//optimized dnn
 	float * input  = images;
 	input += img_start * IMG_SIZE;
 	float * wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[3];
-
-	int yy[fixed_size];
-	register float sum1[fixed_size];
 	
 	// Recognize numbers
 	for(int j = 0; j < IMG_COUNT_pthread; j++)
@@ -84,32 +80,28 @@ void * func(void* arguments) {				//optimized dnn
 		//float * input = images + IMG_SIZE * i;
 		float output[DIGIT_COUNT];
 
-		omp_set_num_threads(4);
 		// From the input layer to the first hidden layer
 		SX = 0;
-		
-		#pragma omp parallel for private(SSUM, Avec, Bvec)
 		for(x = 0; x < fixed_size; x++)
 		{
-			// SX = x * IMG_SIZE;
 			SSUM = vdupq_n_f32(0.0);
-			for(yy[x] = 0; yy[x] < IMG_SIZE; yy[x] += 4)
+			for(y = 0; y < IMG_SIZE; y+=4)
 			{
-				Avec = vld1q_f32(input + yy[x]);
-				Bvec = vld1q_f32(wghts0 +  x * IMG_SIZE + yy[x]);
+				Avec = vld1q_f32(input + y);
+				Bvec = vld1q_f32(wghts0 + SX + y);
 				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
-			}
-			sum1[x] = biases[0][x] + vaddvq_f32(SSUM);
-			hidden_layers[x] = sigmoid(sum1[x]);
-			// SX += IMG_SIZE;
-		}
 
+			}
+			sum = biases[0][x] + vaddvq_f32(SSUM);
+			hidden_layers[x] = sigmoid(sum);
+			SX += IMG_SIZE;
+		}
 		// Between hidden layers
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
 			SSUM = vdupq_n_f32(0.0);
-			for(y = 0; y < fixed_size; y += 4)
+			for(y = 0; y < fixed_size; y+=4)
 			{	
 				Avec = vld1q_f32(hidden_layers + y);
 				Bvec = vld1q_f32(wghts1 + SX + y);
@@ -119,7 +111,6 @@ void * func(void* arguments) {				//optimized dnn
 			hidden_layers[fixed_size + x] = sigmoid(sum);
 			SX += fixed_size;
 		}
-
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
@@ -134,7 +125,6 @@ void * func(void* arguments) {				//optimized dnn
 			hidden_layers[SD + x] = sigmoid(sum);
 			SX += fixed_size;
 		}
-
 		// From the last hidden layer to the output layer
 		SX = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)

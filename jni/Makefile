@@ -1,6 +1,6 @@
 CC = gcc
 #CC=path of your cross compiler
-CFLAGS = -Wall -g -O0
+CFLAGS = -Wall -g -O0 -fopenmp -mfloat-abi=softfp -mfpu=neon
 
 LIBS = -lm -lrt
 LDFLAGS = ${LIBS}
@@ -14,7 +14,7 @@ all: seq
 seq: recognition_seq
 
 recognition_seq: recognition_seq.o main.o
-	${CC} $^ -o $@ ${LDFLAGS}
+	${CC} -fopenmp -mfloat-abi=softfp -mfpu=neon $^ -o $@ ${LDFLAGS}
 
 
 clean:
