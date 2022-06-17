@@ -46,14 +46,19 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < size; x++)
 		{
 			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			float32x4_t Avec2, Bvec2, SSUM2;			// NEON unroll
 			SSUM  = vdupq_n_f32(0.0);
-			for(y = 0; y < IMG_SIZE; y += 4)
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < IMG_SIZE; y += 8)
 			{
 				Avec	= vld1q_f32(input + y);
 				Bvec	= vld1q_f32(weights[0] + size_x + y);
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(input + y + 4);
+				Bvec2	= vld1q_f32(weights[0] + size_x + y + 4);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			float sum = biases[0][x] + vaddvq_f32(SSUM);
+			float sum = biases[0][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			hidden_layers[x] = sigmoid(sum);
 			size_x += IMG_SIZE;
 		}
@@ -64,14 +69,19 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < size; x++)
 		{
 			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			float32x4_t Avec2, Bvec2, SSUM2;			// NEON unroll
 			SSUM  = vdupq_n_f32(0.0);
-			for(y = 0; y < size; y += 4)
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < size; y += 8)
 			{
 				Avec	= vld1q_f32(hidden_layers + y);
 				Bvec	= vld1q_f32(weights[1] + size_x + y);
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + y + 4);
+				Bvec2	= vld1q_f32(weights[1] + size_x + y + 4);
+				SSUM2	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			float sum = biases[1][x] + vaddvq_f32(SSUM);
+			float sum = biases[1][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			hidden_layers[size + x] = sigmoid(sum);
 			size_x += size;
 		}
@@ -80,14 +90,19 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < size; x++)
 		{
 			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			float32x4_t Avec2, Bvec2, SSUM2;			// NEON unroll
 			SSUM  = vdupq_n_f32(0.0);
-			for(y = 0; y < size; y += 4)
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < size; y += 8)
 			{
 				Avec	= vld1q_f32(hidden_layers + size + y);
 				Bvec	= vld1q_f32(weights[2] + size_x + y);
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + size + y + 4);
+				Bvec2	= vld1q_f32(weights[2] + size_x + y + 4);
+				SSUM2	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			float sum = biases[2][x] + vaddvq_f32(SSUM);
+			float sum = biases[2][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			hidden_layers[size * 2 + x] = sigmoid(sum);
 			size_x += size;
 		}
@@ -102,14 +117,19 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
 			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			float32x4_t Avec2, Bvec2, SSUM2;			// NEON unroll
 			SSUM  = vdupq_n_f32(0.0);
-			for(y = 0; y < size; y += 4)
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < size; y += 8)
 			{
 				Avec	= vld1q_f32(hidden_layers + size * (depth-1) + y);
 				Bvec	= vld1q_f32(weights[3] + size_x + y);
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + size * (depth-1) + y + 4);
+				Bvec2	= vld1q_f32(weights[3] + size_x + y + 4);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			float sum = biases[depth][x] + vaddvq_f32(SSUM);
+			float sum = biases[depth][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			output[x] = sigmoid(sum);
 			size_x += size;
 
