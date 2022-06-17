@@ -9,8 +9,8 @@
 
 void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
 {
-	register	unsigned	int		i, j, x, y;	// register unsigned
-				unsigned	int		size_x;		// code motion
+	register	unsigned	int		i, j, x, y;	// register unsigned int
+				unsigned	int		size_x;		// code motion & reduction in strength
 							float	*hidden_layers, *temp, **weights, **biases;
 
 	hidden_layers 	= (float *)malloc(sizeof(float) * size * depth);
@@ -33,16 +33,17 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	weights[depth] = weights[depth - 1] + size * size + size;
 	biases[depth] = weights[depth] + DIGIT_COUNT * size;
 
+	float * input = images;						// reduction in strength
+
 	// Recognize numbers
 	for(i = 0; i < IMG_COUNT; i++)
 	{
-		float * input = images + IMG_SIZE * i;
 		float output[DIGIT_COUNT];
 
 		// From the input layer to the first hidden layer
+		size_x = 0;
 		for(x = 0; x < size; x++)
 		{
-			size_x = IMG_SIZE * x;
 			float sum = 0;
 			for(y = 0; y < IMG_SIZE; y++)
 			{
@@ -50,14 +51,15 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			}
 			sum += biases[0][x];
 			hidden_layers[x] = sigmoid(sum);
+			size_x += IMG_SIZE;
 		}
 
 		// Between hidden layers
 		for(j = 1; j < depth; j++)
 		{
+			size_x = 0;
 			for(x = 0; x < size; x++)
 			{
-				size_x = size * x;
 				float sum = 0;
 				for(y = 0; y < size; y++)
 				{
@@ -65,10 +67,12 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 				}
 				sum += biases[j][x];
 				hidden_layers[size * j + x] = sigmoid(sum);
+				size_x += size;
 			}
 		}
 		
 		// From the last hidden layer to the output layer
+		size_x = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
 			size_x = size * x;
@@ -79,6 +83,7 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			}
 			sum += biases[depth][x];
 			output[x] = sigmoid(sum);
+			size_x += size;
 		}
 
 		// Find the answer
@@ -96,5 +101,7 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		// Store the result
 		confidences[i] = max;
 		labels[i] = label;
+
+		input += IMG_SIZE;
 	}
 }
