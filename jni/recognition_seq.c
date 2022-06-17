@@ -5,13 +5,15 @@
 
 #include <arm_neon.h>
 #include <pthread.h>
+#include <omp.h>
 
 #define sigmoid(x) (1 / (1 + exp(-x)))
-#define IMG_COUNT_pthread 12500
+
+#define thd_num 8
+#define IMG_COUNT_pthread 6250
 #define half_img 392
 #define half_size 256
 #define fixed_depth 3
-#define fixed_depth_p1 4
 #define fixed_size 512
 #define power_size 262144
 #define sss1 262656			// size * size + size
@@ -22,6 +24,9 @@
 #define sd 1536				// size * depth
 #define SD 1024 			// size * (depth-1)
 
+#define sof 6144			// __SIZEOF_FLOAT__ * sd
+#define sofp 32				// __SIZEOF_POINTER__ * (fixed_depth + 1)
+
 //	ndk-build clean && ndk-build && adb push libs/arm64-v8a/recognition_seq /data/local && adb shell chmod +x /data/local/recognition_seq
 
 
@@ -30,31 +35,27 @@ typedef struct{
 	float 			* network;
 	int 			* labels;
 	float 			* confidences;
-	unsigned char	img_start;
-}args;
+	unsigned int	img_start;
+} args;
 
-void * func(void* arguments) {				//optimized dnn
+void * func(void* arguments) {
 
 	args* data = (args*) arguments;
 
-	unsigned int	img_start 		= (data->img_start) * IMG_COUNT_pthread;
+	unsigned int 	img_start 		= (data->img_start) * IMG_COUNT_pthread;
 	float 			* input 		= data->images + img_start * IMG_SIZE;
 	float 			* network 		= data->network;
 	int 			* labels 		= data->labels;
 	float 			* confidences	= data->confidences;
-	
-	register unsigned int 	i, j, x, y, SX;
-	register float 			sum;
-	float 					*hidden_layers, **weights, **biases;
 
-	float32x4_t Avec, Bvec, SSUM;
+	register unsigned	int		i, x, y;
+	register unsigned	int		SX;
+	register 			float 	sum, sum2;
+						float	*hidden_layers, **weights, **biases;
 
-	unsigned long sof 		= sizeof(float);
-	unsigned long sofp 		= sizeof(float *);
-
-	hidden_layers	= (float *) malloc(sof * sd);
-	weights			= (float **)malloc(sofp * fixed_depth_p1);
-	biases			= (float **)malloc(sofp * fixed_depth_p1);
+	hidden_layers	= (float *) malloc(sof);
+	weights			= (float **)malloc(sofp);
+	biases			= (float **)malloc(sofp);
 
 	// Set pointers for weights and biases
 
@@ -73,101 +74,123 @@ void * func(void* arguments) {				//optimized dnn
 	weights[fixed_depth] = network + sis + sss2;
 	biases[fixed_depth]  = weights[fixed_depth] + ds;
 
-	float *wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[fixed_depth];
+	float * wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[3];
+	float output[DIGIT_COUNT];
+
+	float32x4_t Avec,  Bvec,  SSUM;
+	float32x4_t Avec2, Bvec2, SSUM2;
 	
 	// Recognize numbers
-	for(i = img_start; i < img_start + IMG_COUNT_pthread; i++)
+	for(i = img_start; i < img_start+IMG_COUNT_pthread; i++)
 	{
-		float output[DIGIT_COUNT];
-
 		// From the input layer to the first hidden layer
 		SX = 0;
+		// why not loop termination? -> cache hot ratio!
 		for(x = 0; x < fixed_size; x++)
 		{
-			SSUM = vdupq_n_f32(0.0);
-			for(y = 0; y < IMG_SIZE; y+=4)
+			SSUM  = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < IMG_SIZE; y += 8)
 			{
-				Avec = vld1q_f32(input + y);
-				Bvec = vld1q_f32(wghts0 + SX + y);
-				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
-
+				Avec	= vld1q_f32(input + y);
+				Bvec	= vld1q_f32(wghts0 + SX + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(input + y + 4);
+				Bvec2	= vld1q_f32(wghts0 + SX + y + 4);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			sum = biases[0][x] + vaddvq_f32(SSUM);
+			sum = biases[0][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2) ;
 			hidden_layers[x] = sigmoid(sum);
 			SX += IMG_SIZE;
 		}
-
 		// Between hidden layers
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
 			SSUM = vdupq_n_f32(0.0);
-			for(y = 0; y < fixed_size; y+=4)
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < fixed_size; y += 8)
 			{	
-				Avec = vld1q_f32(hidden_layers + y);
-				Bvec = vld1q_f32(wghts1 + SX + y);
-				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec	= vld1q_f32(hidden_layers + y);
+				Bvec	= vld1q_f32(wghts1 + SX + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + y + 4);
+				Bvec2	= vld1q_f32(wghts1 + SX + y + 4);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			sum = biases[1][x] + vaddvq_f32(SSUM);
+			sum = biases[1][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2) ;
 			hidden_layers[fixed_size + x] = sigmoid(sum);
 			SX += fixed_size;
 		}
 		SX = 0;
 		for(x = 0; x < fixed_size; x++)
 		{
-			SSUM = vdupq_n_f32(0.0);
-			for(y = 0; y < fixed_size; y+=4)
+			SSUM  = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < fixed_size; y += 8)
 			{	
-				Avec = vld1q_f32(hidden_layers + fixed_size + y);
-				Bvec = vld1q_f32(wghts2 + SX + y);
-				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec	= vld1q_f32(hidden_layers + fixed_size + y);
+				Bvec	= vld1q_f32(wghts2 + SX + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + fixed_size + y + 4);
+				Bvec2	= vld1q_f32(wghts2 + SX + y + 4);
+				SSUM2 	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			sum = biases[2][x] + vaddvq_f32(SSUM);
+			sum = biases[2][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2) ;
 			hidden_layers[SD + x] = sigmoid(sum);
 			SX += fixed_size;
 		}
-
 		// From the last hidden layer to the output layer
 		// Find the answer
+		// float max = 0;
+		// unsigned int label = 0;
+		
 		SX = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
-			SSUM = vdupq_n_f32(0.0);
-			for(y = 0; y < fixed_size; y+=4)
+			SSUM  = vdupq_n_f32(0.0);
+			SSUM2 = vdupq_n_f32(0.0);
+			for(y = 0; y < fixed_size; y += 8)
 			{
-				Avec = vld1q_f32(hidden_layers + SD + y);
-				Bvec = vld1q_f32(wghts3 + SX + y);
-				SSUM = vmlaq_f32(SSUM, Avec, Bvec);
+				Avec	= vld1q_f32(hidden_layers + SD + y);
+				Bvec	= vld1q_f32(wghts3 + SX + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
+				Avec2	= vld1q_f32(hidden_layers + SD + y + 4);
+				Bvec2	= vld1q_f32(wghts3 + SX + y + 4);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
-			sum = biases[fixed_depth][x] + vaddvq_f32(SSUM);
+			sum = biases[fixed_depth][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2) ;
 			output[x] = sigmoid(sum);
 			SX += fixed_size;
-			if(output[x] > confidences[i]) {
-				labels[i] 		= x;
-				confidences[i]	= output[x];
+			if(output[x] > confidences[i])
+			{
+				labels[i] = x;
+				confidences[i] = output[x];
 			}
 		}
-
 		input += IMG_SIZE;
 	}
+	pthread_exit(NULL);
 }
 
 
-void recognition(float * images, float * network, /* int depth, int size, */ int * labels, float * confidences)
+void recognition(float * images, float * network, /*int depth, int size, */ int * labels, float * confidences)
 {
-	pthread_t 	pid[4];	//pid
-	args 		arguments[4];
-
-	for(unsigned char img_divide = 0 ; img_divide < 4; img_divide++) {
+	pthread_t pid[thd_num];	//pid
+	args arguments[thd_num];
+	unsigned int img_divide;
+	// omp_set_num_threads(4);
+	// #pragma omp parallel for
+	for (img_divide = 0 ; img_divide < thd_num; img_divide++) {
 		arguments[img_divide].img_start		= img_divide;
 		arguments[img_divide].images		= images;
 		arguments[img_divide].network		= network;
 		arguments[img_divide].labels		= labels;
 		arguments[img_divide].confidences	= confidences;
-		pthread_create( &pid[img_divide]/*pid*/ , NULL, &func, (void *)&arguments[img_divide] );	//multiple, like 4
+		pthread_create( &pid[img_divide]/*pid*/ , NULL, &func , (void *)&arguments[img_divide] );	//multiple, like 4
 	}
 
-	for(int img_divide = 0 ; img_divide < 4; img_divide++) {
+	for (img_divide = 0 ; img_divide < thd_num; img_divide++) {
 		pthread_join( pid[img_divide],  NULL );
 	}
 }
