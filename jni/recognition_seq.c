@@ -1,4 +1,4 @@
-//	ndk-build clean && ndk-build && adb push libs/arm64-v8a/recognition_seq /data/local && adb shell chmod +x /data/local/recognition_seq 
+//	ndk-build clean && ndk-build && adb push libs/arm64-v8a/recognition_seq /data/local && adb shell chmod +x /data/local/recognition_seq
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,7 +113,7 @@ void * pthd_func(void* arguments) {
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 				Avec2	= vld1q_f32(hidden_layers + y + 4);
 				Bvec2	= vld1q_f32(wghts1 + size_x + y + 4);
-				SSUM2	= vmlaq_f32(SSUM, Avec, Bvec);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			float sum = biases[1][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			hidden_layers[size_512 + x] = sigmoid(sum);
@@ -134,7 +134,7 @@ void * pthd_func(void* arguments) {
 				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 				Avec2	= vld1q_f32(hidden_layers + size_512 + y + 4);
 				Bvec2	= vld1q_f32(wghts2 + size_x + y + 4);
-				SSUM2	= vmlaq_f32(SSUM, Avec, Bvec);
+				SSUM2	= vmlaq_f32(SSUM2, Avec2, Bvec2);
 			}
 			float sum = biases[2][x] + vaddvq_f32(SSUM) + vaddvq_f32(SSUM2);
 			hidden_layers[size_depth_m1 + x] = sigmoid(sum);
@@ -152,7 +152,7 @@ void * pthd_func(void* arguments) {
 			float32x4_t Avec2, Bvec2, SSUM2;			// NEON unroll
 			SSUM  = vdupq_n_f32(0.0);
 			SSUM2 = vdupq_n_f32(0.0);
-			for(y = 0; y < size; y += 8)
+			for(y = 0; y < size_512; y += 8)
 			{
 				Avec	= vld1q_f32(hidden_layers + size_depth_m1 + y);
 				Bvec	= vld1q_f32(wghts3 + size_x + y);
@@ -167,7 +167,7 @@ void * pthd_func(void* arguments) {
 
 			if(output[x] > confidences[i])
 			{
-				label[i] = x;
+				labels[i] = x;
 				confidences[i] = output[x];
 			}
 		}
