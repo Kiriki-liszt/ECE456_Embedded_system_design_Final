@@ -164,7 +164,7 @@ void * func(void* arguments) {				//optimized dnn
 }
 
 
-void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
+void recognition(float * images, float * network, /*int depth, int size, */ int * labels, float * confidences)
 {
 	pthread_t pid[4];	//pid
 	args arguments[4];

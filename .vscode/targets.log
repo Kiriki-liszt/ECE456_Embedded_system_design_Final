@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.3
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jun 16 23:11:06 2022
+# Make data base, printed on Fri Jun 17 08:57:06 2022
 
 # Variables
 
@@ -23,7 +21,7 @@ SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-c8a557b5-dde9-4290-a433-7e8ffb71ccce.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-b5c989ae-0d9b-4a84-9228-ec2c62ecdb00.sock
 # environment
 LC_NAME = ko_KR.UTF-8
 # environment
@@ -32,6 +30,8 @@ LC_NUMERIC = ko_KR.UTF-8
 VSCODE_CWD = /home/yoon
 # environment
 WINDOWPATH = 2
+# environment
+NDK_ROOT = /home/yoon/android-ndk-r23
 # environment
 LC_ADDRESS = ko_KR.UTF-8
 # default
@@ -99,7 +99,7 @@ CONDA_SHLVL = 0
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 3303
+VSCODE_PID = 4010
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -107,7 +107,7 @@ XDG_SESSION_TYPE = x11
 # environment
 CONDA_PYTHON_EXE = /home/yoon/anaconda3/bin/python
 # environment
-SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1766,unix/yoon:/tmp/.ICE-unix/1766
+SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1718,unix/yoon:/tmp/.ICE-unix/1718
 # automatic
 *F = $(notdir $*)
 # environment
@@ -137,7 +137,7 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/yoon/.local/bin:/home/yoon/anaconda3/condabin:/home/yoon/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin
+PATH = /home/yoon/.local/bin:/home/yoon/anaconda3/condabin:/home/yoon/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/yoon/platform-tools:/home/yoon/android-ndk-r23:/home/yoon/platform-tools
 # default
 MAKEFILES := 
 # environment
@@ -147,7 +147,7 @@ LC_MONETARY = ko_KR.UTF-8
 # environment
 LC_TIME = ko_KR.UTF-8
 # environment
-INVOCATION_ID = fc0f3d70858b45aaaee971ea69b9610f
+INVOCATION_ID = 806f7f8a34ee4ecaae7cd335f610e7df
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -177,7 +177,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 1785
+SYSTEMD_EXEC_PID = 1737
 # environment
 DISPLAY = :0
 # environment
@@ -187,11 +187,11 @@ GTK_MODULES = gail:atk-bridge
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 1113
+MANAGERPID = 1153
 # environment
 LC_MEASUREMENT = ko_KR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3303
+GIO_LAUNCHED_DESKTOP_FILE_PID = 4010
 # environment
 _ = /usr/share/code/code
 # environment
@@ -203,7 +203,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 _CE_M = 
 # environment
-JOURNAL_STREAM = 8:34825
+JOURNAL_STREAM = 8:34149
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -235,7 +235,7 @@ GDMSESSION = ubuntu
 # environment
 LC_IDENTIFICATION = ko_KR.UTF-8
 # variable set hash-table stats:
-# Load=111/1024=11%, Rehash=0, Collisions=4/138=3%
+# Load=112/1024=11%, Rehash=0, Collisions=4/139=3%
 
 # Pattern-specific Variable Values
 
@@ -281,7 +281,6 @@ makefile:
 #  Failed to be updated.
 
 # Not a target:
- 
 GNUmakefile:
 #  Implicit rule search has been done.
 #  File does not exist.
@@ -297,11 +296,14 @@ GNUmakefile:
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 18 / storage = 146 B / avg = 8 B
+ 
+make: *** No rule to make target 'all'.  Stop.
+
 # current buf: size = 8162 B / used = 146 B / count = 18 / avg = 8 B
 
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=0/21=0%
-# Finished Make data base on Thu Jun 16 23:11:06 2022
+# Finished Make data base on Fri Jun 17 08:57:06 2022
 
  

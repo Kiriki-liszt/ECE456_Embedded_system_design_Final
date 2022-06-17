@@ -22,26 +22,28 @@ int main(int argc, char** argv) {
 
 	// Check parameters
 	if (argc < 3) {
-	fprintf(stderr, "Usage: %s <network file> <output file>\n", argv[0]);
-	exit(EXIT_FAILURE);
+		fprintf(stderr, "Usage: %s <network file> <output file>\n", argv[0]);
+		exit(EXIT_FAILURE);
 	}
 
-	images = (float *)malloc(sizeof(float)*IMG_COUNT*IMG_SIZE);
-	labels = (int *)malloc(sizeof(int)*IMG_COUNT);
-	labels_ans = (int *)malloc(sizeof(int)*IMG_COUNT);
-	confidences = (float *)malloc(sizeof(float)*IMG_COUNT);
+	images		= (float *)malloc(sizeof(float)*IMG_COUNT*IMG_SIZE);
+	labels		= (int *)  malloc(sizeof(int)*IMG_COUNT);
+	labels_ans	= (int *)  malloc(sizeof(int)*IMG_COUNT);
+	confidences	= (float *)malloc(sizeof(float)*IMG_COUNT);
 
 	io_file = fopen(argv[1], "r");
-	if(!io_file)
-	{
-	fprintf(stderr, "Invalid network file %s!\n", argv[1]);
-	exit(EXIT_FAILURE);
+	if(!io_file) {
+		fprintf(stderr, "Invalid network file %s!\n", argv[1]);
+		exit(EXIT_FAILURE);
 	}
+	// 네트워크 파일은 int형 네트워크의 깊이와 레이어당 뉴런의 개수를 맨 처음 가진다. 
 	fread(&depth, sizeof(int), 1, io_file);
-	fread(&size, sizeof(int), 1, io_file);
+	fread( &size, sizeof(int), 1, io_file);
 	printf("size=%d, depth=%d\n", size, depth);
 	total_network_size = (IMG_SIZE * size + size) + (depth - 1) * (size * size + size) + size  * DIGIT_COUNT + DIGIT_COUNT;
 	network = (float *)malloc(sizeof(float) * (total_network_size));
+	// 그 후 float형으로 모든 값을 가진다.
+	// rec 함수에서 알 수 있듯이, 네트워크 파일은 각 레이어의 weights와 bias를 순서대로 저장하고 있다. 
 	fread(network, sizeof(float), total_network_size, io_file);
 	fclose(io_file);
 
@@ -54,14 +56,15 @@ int main(int argc, char** argv) {
 	fclose(io_file);
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	recognition(images, network, depth, size, labels, confidences);
+	recognition(images, network, /* depth, size,*/ labels, confidences);
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	timespec_subtract(&spent, &end, &start);
 
 	correct = 0;
-	for(i = 0; i <IMG_COUNT; i++)
-	{
-	if(labels_ans[i] == labels[i]) correct++;
+	for(i = 0; i <IMG_COUNT; i++) {
+		if(labels_ans[i] == labels[i]) {
+			correct++;
+		}
 	}
 	accuracy = (float)correct / (float)IMG_COUNT;
 
@@ -70,9 +73,8 @@ int main(int argc, char** argv) {
 	// Write the result
 	io_file = fopen(argv[2], "wb");
 	fprintf(io_file, "%.3f\n", accuracy);
-	for(i = 0; i < IMG_COUNT; i++)
-	{
-	fprintf(io_file,"%d, %d, %.3f\n", labels_ans[i], labels[i], confidences[i]);
+	for(i = 0; i < IMG_COUNT; i++) {
+		fprintf(io_file,"%d, %d, %.3f\n", labels_ans[i], labels[i], confidences[i]);
 	}
 	fclose(io_file);
 
@@ -82,14 +84,14 @@ int main(int argc, char** argv) {
 int timespec_subtract(struct timespec* result, struct timespec *x, struct timespec *y) {
 	/* Perform the carry for the later subtraction by updating y. */
 	if (x->tv_nsec < y->tv_nsec) {
-	int nsec = (y->tv_nsec - x->tv_nsec) / 1000000000 + 1;
-	y->tv_nsec -= 1000000000 * nsec;
-	y->tv_sec += nsec;
+		int nsec = (y->tv_nsec - x->tv_nsec) / 1000000000 + 1;
+		y->tv_nsec -= 1000000000 * nsec;
+		y->tv_sec += nsec;
 	}
-	if (x->tv_nsec - y->tv_nsec > 1000000000) {
-	int nsec = (x->tv_nsec - y->tv_nsec) / 1000000000;
-	y->tv_nsec += 1000000000 * nsec;
-	y->tv_sec -= nsec;
+		if (x->tv_nsec - y->tv_nsec > 1000000000) {
+		int nsec = (x->tv_nsec - y->tv_nsec) / 1000000000;
+		y->tv_nsec += 1000000000 * nsec;
+		y->tv_sec -= nsec;
 	}
 
 	/* Compute the time remaining to wait.
