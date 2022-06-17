@@ -39,8 +39,6 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	// Recognize numbers
 	for(i = 0; i < IMG_COUNT; i++)
 	{
-		float output[DIGIT_COUNT];
-
 		// From the input layer to the first hidden layer
 		size_x = 0;
 		for(x = 0; x < size; x++)
@@ -84,6 +82,11 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		}
 		
 		// From the last hidden layer to the output layer
+		// Find the answer
+		// Loop jamming
+		float output[DIGIT_COUNT];
+		float max = 0;
+		int label = 0;
 		size_x = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
@@ -96,13 +99,7 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			sum += biases[depth][x];
 			output[x] = sigmoid(sum);
 			size_x += size;
-		}
 
-		// Find the answer
-		float max = 0;
-		int label = 0;
-		for(x = 0; x < DIGIT_COUNT; x++)
-		{
 			if(output[x] > max)
 			{
 				label = x;
