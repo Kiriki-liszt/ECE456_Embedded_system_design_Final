@@ -177,7 +177,7 @@ void * pthd_func(void* arguments) {
 }
 
 
-void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
+void recognition(float * images, float * network, /* int depth, int size,*/ int * labels, float * confidences)
 {
 	pthread_t pid[thd_num];	//pid
 	args arguments[thd_num];
