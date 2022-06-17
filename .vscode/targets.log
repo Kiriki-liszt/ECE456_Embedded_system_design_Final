@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 17 11:25:26 2022
+# Make data base, printed on Fri Jun 17 23:15:20 2022
 
 # Variables
 
@@ -23,7 +23,7 @@ SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-13b6e314-eef0-44f5-93a2-93e565a9eb21.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-4d0efa6e-43d0-4dc6-9cdf-40606540e5a4.sock
 # environment
 LC_NAME = ko_KR.UTF-8
 # environment
@@ -59,7 +59,7 @@ VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/yoon/.config/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
+VSCODE_CODE_CACHE_PATH = /home/yoon/.config/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
 # environment
 LANG = C
 # environment
@@ -101,7 +101,7 @@ CONDA_SHLVL = 0
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 22181
+VSCODE_PID = 74551
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -193,7 +193,7 @@ MANAGERPID = 1153
 # environment
 LC_MEASUREMENT = ko_KR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 22181
+GIO_LAUNCHED_DESKTOP_FILE_PID = 74551
 # environment
 _ = /usr/share/code/code
 # environment
@@ -217,7 +217,7 @@ QT_IM_MODULE = ibus
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-b9587ced-1.68.0-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-b9587ced-1.68.1-main.sock
 # default
 .RECIPEPREFIX := 
 # automatic
@@ -290,12 +290,12 @@ GNUmakefile:
 #  Failed to be updated.
 
 # files hash-table stats:
- 
 # Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
+ 
 # No general ('VPATH' variable) search path.
 
 # strcache buffers: 1 (0) / strings = 18 / storage = 146 B / avg = 8 B
@@ -304,6 +304,6 @@ GNUmakefile:
 # strcache performance: lookups = 21 / hit rate = 14%
 # hash-table stats:
 # Load=18/8192=0%, Rehash=0, Collisions=0/21=0%
-# Finished Make data base on Fri Jun 17 11:25:26 2022
+# Finished Make data base on Fri Jun 17 23:15:20 2022
 
  

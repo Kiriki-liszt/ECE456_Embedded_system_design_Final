@@ -5,7 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_CFLAGS += -fPIE -mfloat-abi=softfp -mfpu=neon -fopenmp -g
 LOCAL_LDFLAGS += -fPIE -fopenmp -static-openmp # -pie
 
-LOCAL_MODULE:=recognition_seq
+LOCAL_MODULE:=project_basis
 
 LOCAL_SRC_FILES:=recognition_seq.c main.c
 

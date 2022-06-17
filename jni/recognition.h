@@ -2,5 +2,5 @@
 #define IMG_COUNT 50000 // 이미지 개수
 #define DIGIT_COUNT 10  // 출력 레이어 노드 수. 여기서는 신경망이 결론으로 낼 가지수인 0부터 9까지 총10개.
 
-void recognition(float * images, float * network, /* int depth, int size, */ int * labels, float * confidences);
-
+void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences);
+//void recognition(float * images, float * network, /* int depth, int size, */ int * labels, float * confidences);
