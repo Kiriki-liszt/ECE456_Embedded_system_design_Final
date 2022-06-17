@@ -1,4 +1,4 @@
-//	ndk-build clean && ndk-build && adb push libs/arm64-v8a/project_basis /data/local && adb shell chmod +x /data/local/project_basis
+//	ndk-build clean && ndk-build && adb push libs/arm64-v8a/recognition_seq /data/local && adb shell chmod +x /data/local/recognition_seq 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include <arm_neon.h>
+#include <pthread.h>
 
 #define sigmoid(x) (1 / (1 + exp(-x)))
 
@@ -20,11 +21,30 @@
 #define size_size_addsize_x2 525312		// 2 * ( size * size + size )
 #define size_IMG_SIZE 401408			// size * IMAGE_SIZE
 #define size_IMG_SIZE_addsize 401920	// size * IMAGE_SIZE + size
-#define sof 6144			// __SIZEOF_FLOAT__ * size * depth
-#define sofp 32				// __SIZEOF_POINTER__ * (depth + 1)
+#define sof 6144						// __SIZEOF_FLOAT__ * size * depth
+#define sofp 32							// __SIZEOF_POINTER__ * (depth + 1)
 
-void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
-{
+#define thd_num 8
+#define IMG_COUNT_pthread 6250
+
+typedef struct{
+	float 			* images;
+	float 			* network;
+	int 			* labels;
+	float 			* confidences;
+	unsigned int	img_start;
+} args;
+
+void * pthd_func(void* arguments) {
+
+	args* data = (args*) arguments;
+
+	unsigned int 	img_start 		= (data->img_start) * IMG_COUNT_pthread;
+	float 			* input 		= data->images + img_start * IMG_SIZE;
+	float 			* network 		= data->network;
+	int 			* labels 		= data->labels;
+	float 			* confidences	= data->confidences;
+
 	register	unsigned	int		i, x, y;	// register unsigned int
 				unsigned	int		size_x;		// code motion & reduction in strength
 							float	*hidden_layers, *temp, **weights, **biases;
@@ -51,10 +71,9 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	biases[depth_3]  = weights[depth_3] + size_DIGIT_COUNT;
 
 	float * wghts0 = weights[0], * wghts1 = weights[1], * wghts2 = weights[2], * wghts3 = weights[3];
-	float * input = images;
 
 	// Recognize numbers
-	for(i = 0; i < IMG_COUNT; i++)
+	for(i = img_start; i < img_start+IMG_COUNT_pthread; i++)
 	{
 		// From the input layer to the first hidden layer
 		size_x = 0;
@@ -153,5 +172,27 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 			}
 		}
 		input += IMG_SIZE;
+	}
+	pthread_exit(NULL);
+}
+
+
+void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
+{
+	pthread_t pid[thd_num];	//pid
+	args arguments[thd_num];
+	unsigned int img_divide;
+
+	for (img_divide = 0 ; img_divide < thd_num; img_divide++) {
+		arguments[img_divide].img_start		= img_divide;
+		arguments[img_divide].images		= images;
+		arguments[img_divide].network		= network;
+		arguments[img_divide].labels		= labels;
+		arguments[img_divide].confidences	= confidences;
+		pthread_create( &pid[img_divide]/*pid*/ , NULL, &pthd_func, (void *)&arguments[img_divide] ); 
+	}
+
+	for (img_divide = 0 ; img_divide < thd_num; img_divide++) {
+		pthread_join( pid[img_divide],  NULL );
 	}
 }
