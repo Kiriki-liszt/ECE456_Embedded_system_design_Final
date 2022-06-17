@@ -5,6 +5,8 @@
 #include "recognition.h"
 #include <math.h>
 
+#include <arm_neon.h>
+
 #define sigmoid(x) (1 / (1 + exp(-x)))
 
 void recognition(float * images, float * network, int depth, int size, int * labels, float * confidences)
@@ -43,15 +45,15 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		size_x = 0;
 		for(x = 0; x < size; x++)
 		{
-			float sum_array[4] = {0, 0, 0, 0}, sum = 0;
+			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			SSUM  = vdupq_n_f32(0.0);
 			for(y = 0; y < IMG_SIZE; y += 4)
 			{
-				sum_array[0] += input[y    ] * weights[0][size_x + y    ];
-				sum_array[1] += input[y + 1] * weights[0][size_x + y + 1];
-				sum_array[2] += input[y + 2] * weights[0][size_x + y + 2];
-				sum_array[3] += input[y + 3] * weights[0][size_x + y + 3];
+				Avec	= vld1q_f32(input + y);
+				Bvec	= vld1q_f32(weights[0] + size_x + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			sum += biases[0][x] + sum_array[0] + sum_array[1] + sum_array[2] + sum_array[3];
+			float sum = biases[0][x] + vaddvq_f32(SSUM);
 			hidden_layers[x] = sigmoid(sum);
 			size_x += IMG_SIZE;
 		}
@@ -61,15 +63,15 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		size_x = 0;
 		for(x = 0; x < size; x++)
 		{
-			float sum_array[4] = {0, 0, 0, 0}, sum = 0;
+			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			SSUM  = vdupq_n_f32(0.0);
 			for(y = 0; y < size; y += 4)
 			{
-				sum_array[0] += hidden_layers[y    ] * weights[1][size_x + y    ];
-				sum_array[1] += hidden_layers[y + 1] * weights[1][size_x + y + 1];
-				sum_array[2] += hidden_layers[y + 2] * weights[1][size_x + y + 2];
-				sum_array[3] += hidden_layers[y + 3] * weights[1][size_x + y + 3];
+				Avec	= vld1q_f32(hidden_layers + y);
+				Bvec	= vld1q_f32(weights[1] + size_x + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			sum += biases[1][x] + sum_array[0] + sum_array[1] + sum_array[2] + sum_array[3];
+			float sum = biases[1][x] + vaddvq_f32(SSUM);
 			hidden_layers[size + x] = sigmoid(sum);
 			size_x += size;
 		}
@@ -77,15 +79,15 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		size_x = 0;
 		for(x = 0; x < size; x++)
 		{
-			float sum_array[4] = {0, 0, 0, 0}, sum = 0;
+			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			SSUM  = vdupq_n_f32(0.0);
 			for(y = 0; y < size; y += 4)
 			{
-				sum_array[0] += hidden_layers[size + y    ] * weights[2][size_x + y    ];
-				sum_array[1] += hidden_layers[size + y + 1] * weights[2][size_x + y + 1];
-				sum_array[2] += hidden_layers[size + y + 2] * weights[2][size_x + y + 2];
-				sum_array[3] += hidden_layers[size + y + 3] * weights[2][size_x + y + 3];
+				Avec	= vld1q_f32(hidden_layers + size + y);
+				Bvec	= vld1q_f32(weights[2] + size_x + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			sum += biases[2][x] + sum_array[0] + sum_array[1] + sum_array[2] + sum_array[3];
+			float sum = biases[2][x] + vaddvq_f32(SSUM);
 			hidden_layers[size * 2 + x] = sigmoid(sum);
 			size_x += size;
 		}
@@ -99,15 +101,15 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		size_x = 0;
 		for(x = 0; x < DIGIT_COUNT; x++)
 		{
-			float sum_array[4] = {0, 0, 0, 0}, sum = 0;
+			float32x4_t Avec,  Bvec,  SSUM;				// NEON
+			SSUM  = vdupq_n_f32(0.0);
 			for(y = 0; y < size; y += 4)
 			{
-				sum_array[0] += hidden_layers[size * (depth-1) + y    ] * weights[depth][size_x + y    ];
-				sum_array[1] += hidden_layers[size * (depth-1) + y + 1] * weights[depth][size_x + y + 1];
-				sum_array[2] += hidden_layers[size * (depth-1) + y + 2] * weights[depth][size_x + y + 2];
-				sum_array[3] += hidden_layers[size * (depth-1) + y + 3] * weights[depth][size_x + y + 3];
+				Avec	= vld1q_f32(hidden_layers + size * (depth-1) + y);
+				Bvec	= vld1q_f32(weights[3] + size_x + y);
+				SSUM	= vmlaq_f32(SSUM, Avec, Bvec);
 			}
-			sum += biases[depth][x] + sum_array[0] + sum_array[1] + sum_array[2] + sum_array[3];
+			float sum = biases[depth][x] + vaddvq_f32(SSUM);
 			output[x] = sigmoid(sum);
 			size_x += size;
 
