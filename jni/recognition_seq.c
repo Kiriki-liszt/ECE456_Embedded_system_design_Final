@@ -23,11 +23,12 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 	biases[0] = weights[0] + size * IMG_SIZE;
 
 	// 2. Hidden layers
-	for(i = 1; i < depth; i++)
-	{
-		weights[i] = network + (size * IMG_SIZE + size) + (size * size + size) * (i-1);
-		biases[i] = weights[i] + size * size;
-	}
+	// layer 1
+	weights[1] = network + (size * IMG_SIZE + size);
+	biases[1] = weights[1] + size * size;
+	// layer 2
+	weights[2] = network + (size * IMG_SIZE + size) + (size * size + size);
+	biases[2] = weights[2] + size * size;
 
 	// 3. Output layer
 	weights[depth] = weights[depth - 1] + size * size + size;
@@ -55,20 +56,31 @@ void recognition(float * images, float * network, int depth, int size, int * lab
 		}
 
 		// Between hidden layers
-		for(j = 1; j < depth; j++)
+		// layer 1
+		size_x = 0;
+		for(x = 0; x < size; x++)
 		{
-			size_x = 0;
-			for(x = 0; x < size; x++)
+			float sum = 0;
+			for(y = 0; y < size; y++)
 			{
-				float sum = 0;
-				for(y = 0; y < size; y++)
-				{
-					sum += hidden_layers[size * (j-1) + y] * weights[j][size_x + y];
-				}
-				sum += biases[j][x];
-				hidden_layers[size * j + x] = sigmoid(sum);
-				size_x += size;
+				sum += hidden_layers[y] * weights[1][size_x + y];
 			}
+			sum += biases[1][x];
+			hidden_layers[size + x] = sigmoid(sum);
+			size_x += size;
+		}
+		// layer 2
+		size_x = 0;
+		for(x = 0; x < size; x++)
+		{
+			float sum = 0;
+			for(y = 0; y < size; y++)
+			{
+				sum += hidden_layers[size + y] * weights[2][size_x + y];
+			}
+			sum += biases[2][x];
+			hidden_layers[size * 2 + x] = sigmoid(sum);
+			size_x += size;
 		}
 		
 		// From the last hidden layer to the output layer
