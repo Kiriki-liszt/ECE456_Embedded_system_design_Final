@@ -2,7 +2,7 @@ LOCAL_PATH:=$(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_CFLAGS += -fPIE -g
+LOCAL_CFLAGS += -fPIE -mfloat-abi=softfp -mfpu=neon -g
 LOCAL_LDFLAGS += -fPIE # -pie
 
 LOCAL_MODULE:=recognition_seq
