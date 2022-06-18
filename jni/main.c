@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
 	fclose(io_file);
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-	// recognition(images, network, depth, size, labels, confidences);
-	recognition(images, network, /* depth, size,*/ labels, confidences);
+	recognition(images, network, depth, size, labels, confidences);
+	/// recognition(images, network, /* depth, size,*/ labels, confidences);
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	timespec_subtract(&spent, &end, &start);
 
