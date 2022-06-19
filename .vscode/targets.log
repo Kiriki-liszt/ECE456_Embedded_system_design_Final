@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jun 18 20:40:47 2022
+# Make data base, printed on Sun Jun 19 10:45:44 2022
 
 # Variables
 
@@ -23,7 +23,7 @@ SSH_AGENT_LAUNCHER = gnome-keyring
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-5f52a75e-1440-410a-adc9-4558f70a6d1c.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-20d60b09-d36a-4036-acda-1d3abec8b94b.sock
 # environment
 LC_NAME = ko_KR.UTF-8
 # environment
@@ -101,7 +101,7 @@ CONDA_SHLVL = 0
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 5097
+VSCODE_PID = 3280
 # environment
 XDG_SESSION_TYPE = x11
 # automatic
@@ -109,7 +109,7 @@ XDG_SESSION_TYPE = x11
 # environment
 CONDA_PYTHON_EXE = /home/yoon/anaconda3/bin/python
 # environment
-SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1670,unix/yoon:/tmp/.ICE-unix/1670
+SESSION_MANAGER = local/yoon:@/tmp/.ICE-unix/1698,unix/yoon:/tmp/.ICE-unix/1698
 # automatic
 *F = $(notdir $*)
 # environment
@@ -149,7 +149,7 @@ LC_MONETARY = ko_KR.UTF-8
 # environment
 LC_TIME = ko_KR.UTF-8
 # environment
-INVOCATION_ID = 576bcba3d16a4c759fa2781b3a656059
+INVOCATION_ID = c6c080575f3943ac90c47642af306f57
 # environment
 VSCODE_LOG_NATIVE = false
 # environment
@@ -179,7 +179,7 @@ GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # makefile
 .DEFAULT_GOAL := 
 # environment
-SYSTEMD_EXEC_PID = 1689
+SYSTEMD_EXEC_PID = 1720
 # environment
 DISPLAY = :0
 # environment
@@ -189,11 +189,11 @@ GTK_MODULES = gail:atk-bridge
 # default
 MAKE_VERSION := 4.3
 # environment
-MANAGERPID = 1139
+MANAGERPID = 1156
 # environment
 LC_MEASUREMENT = ko_KR.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 5097
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3280
 # environment
 _ = /usr/share/code/code
 # environment
@@ -205,7 +205,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 _CE_M = 
 # environment
-JOURNAL_STREAM = 8:33378
+JOURNAL_STREAM = 8:26576
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -245,9 +245,9 @@ LC_IDENTIFICATION = ko_KR.UTF-8
 
 # Directories
 
-# . (device 66315, inode 4792323): 11 files, no impossibilities.
+# . (device 66315, inode 4792323): 12 files, no impossibilities.
 
-# 11 files, no impossibilities in 1 directories.
+# 12 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -290,20 +290,20 @@ GNUmakefile:
 #  Failed to be updated.
 
 # files hash-table stats:
- 
 # Load=6/1024=1%, Rehash=0, Collisions=0/15=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
+ 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 19 / storage = 154 B / avg = 8 B
-# current buf: size = 8162 B / used = 154 B / count = 19 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 20 / storage = 160 B / avg = 8 B
+# current buf: size = 8162 B / used = 160 B / count = 20 / avg = 8 B
 
-# strcache performance: lookups = 22 / hit rate = 13%
+# strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
-# Load=19/8192=0%, Rehash=0, Collisions=0/22=0%
-# Finished Make data base on Sat Jun 18 20:40:47 2022
+# Load=20/8192=0%, Rehash=0, Collisions=0/23=0%
+# Finished Make data base on Sun Jun 19 10:45:44 2022
 
  
